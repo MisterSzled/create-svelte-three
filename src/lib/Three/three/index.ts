@@ -42,7 +42,31 @@ const createScene = (canvas: HTMLCanvasElement, window: Window) => {
                 configureEnvironment(scene, loader.resources["main"], gui);
                 scene.add(floor(loader.resources["main"]))
                 scene.add(fox(loader.resources["main"], timer, gui))
-        })
+        });
+
+        const destroy = () => {
+                sizer.off('resize')
+                timer.off('tick')
+
+                scene.traverse((child) => {
+                        if (child instanceof THREE.Mesh) {
+                                child.geometry.dispose()
+
+                                for (const key in child.material) {
+                                        const value = child.material[key]
+
+                                        if (value && typeof value.dispose === 'function') {
+                                                value.dispose()
+                                        }
+                                }
+                        }
+                })
+
+                controls.dispose()
+                renderer.dispose()
+
+                gui.destroy()
+        }
 };
 
 export { createScene };
