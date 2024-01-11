@@ -7,6 +7,7 @@ import { getLoader } from "./engine/loader/loader";
 import GUI from 'lil-gui';
 import { getAnimator } from './engine/animator/animator';
 
+import { simpleCube } from './entities/simpleCube';
 import floor from './entities/floor/floor';
 import fox from './entities/fox/fox';
 import { configureEnvironment } from "./entities/environment/environment";
@@ -42,6 +43,7 @@ const createScene = (canvas: HTMLCanvasElement, window: Window) => {
                 configureEnvironment(scene, loader.resources["main"], gui);
                 scene.add(floor(loader.resources["main"]))
                 scene.add(fox(loader.resources["main"], timer, gui))
+                scene.add(simpleCube())
         });
 
         const destroy = () => {
