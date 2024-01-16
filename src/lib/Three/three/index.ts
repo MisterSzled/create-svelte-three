@@ -47,7 +47,7 @@ const createScene = (canvas: HTMLCanvasElement, window: Window) => {
                 configureEnvironment(scene, loader.resources["main"], gui);
                 scene.add(floor(loader.resources["main"]));
                 scene.add(fox(loader.resources["main"], timer, gui));
-                // scene.add(simpleCube());
+                scene.add(simpleCube());
         });
 
         console.log("asdasd")
