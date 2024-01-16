@@ -1,7 +1,9 @@
-function getAnimator(timer: any, renderer: any, scene: any, camera: any) {
+function getAnimator(timer: any, renderer: any, scene: any, camera: any, stats: any) {
         renderer.render(scene, camera);
         timer.on("tick", () => {
-                animate(renderer, scene, camera)
+                stats.begin();
+                animate(renderer, scene, camera);
+                stats.end()
         })
 }
 

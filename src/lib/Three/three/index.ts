@@ -1,16 +1,17 @@
-import * as THREE from 'three';
-import { getCamera, getControls } from './engine/camera/camera';
-import { getSizer } from './engine/sizes/sizes';
+import * as THREE from "three";
+import { getCamera, getControls } from "./engine/camera/camera";
+import { getSizer } from "./engine/sizes/sizes";
 import { getRenderer } from "./engine/renderer/renderer";
 import { getTimer } from "./engine/timer/timer";
 import { getLoader } from "./engine/loader/loader";
-import GUI from 'lil-gui';
-import { getAnimator } from './engine/animator/animator';
+import GUI from "lil-gui";
+import { getAnimator } from "./engine/animator/animator";
 
-import { simpleCube } from './entities/simpleCube';
-import floor from './entities/floor/floor';
-import fox from './entities/fox/fox';
+import { simpleCube } from "./entities/simpleCube";
+import floor from "./entities/floor/floor";
+import fox from "./entities/fox/fox";
 import { configureEnvironment } from "./entities/environment/environment";
+import Stats from "stats.js";
 
 const createScene = (canvas: HTMLCanvasElement, window: Window) => {
         // Setup
@@ -22,10 +23,13 @@ const createScene = (canvas: HTMLCanvasElement, window: Window) => {
 
         // Assets
         let loader = getLoader();
-        loader.load("main")
+        loader.load("main");
 
         // DX
         const gui = new GUI();
+        var stats = new Stats();
+        stats.showPanel(0);
+        document.body.appendChild(stats.dom);
 
         // Camera
         let camera = getCamera(scene, sizer);
@@ -34,41 +38,43 @@ const createScene = (canvas: HTMLCanvasElement, window: Window) => {
         const axesHelper = new THREE.AxesHelper(5);
         scene.add(axesHelper);
 
-        let animator = getAnimator(timer, renderer, scene, camera);
+        let animator = getAnimator(timer, renderer, scene, camera, stats);
 
         loader.on("loaded", (args) => {
-                console.log("Loaded: ", args)
+                console.log("Loaded: ", args);
 
                 // Bundle 1 / "main"
                 configureEnvironment(scene, loader.resources["main"], gui);
-                scene.add(floor(loader.resources["main"]))
-                scene.add(fox(loader.resources["main"], timer, gui))
-                scene.add(simpleCube())
+                scene.add(floor(loader.resources["main"]));
+                scene.add(fox(loader.resources["main"], timer, gui));
+                // scene.add(simpleCube());
         });
 
+        console.log("asdasd")
+
         const destroy = () => {
-                sizer.off('resize')
-                timer.off('tick')
+                sizer.off("resize");
+                timer.off("tick");
 
                 scene.traverse((child) => {
                         if (child instanceof THREE.Mesh) {
-                                child.geometry.dispose()
+                                child.geometry.dispose();
 
                                 for (const key in child.material) {
-                                        const value = child.material[key]
+                                        const value = child.material[key];
 
                                         if (value && typeof value.dispose === 'function') {
                                                 value.dispose()
                                         }
                                 }
                         }
-                })
+                });
 
-                controls.dispose()
-                renderer.dispose()
+                controls.dispose();
+                renderer.dispose();
 
-                gui.destroy()
-        }
+                gui.destroy();
+        };
 };
 
 export { createScene };
